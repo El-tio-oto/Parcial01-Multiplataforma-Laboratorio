@@ -1,3 +1,11 @@
+/* Permitir app de agenda a ancho completo */
+#root:has(.app-agenda) {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -39,4 +47,90 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* ========== Splash / Loading screen ========== */
+@keyframes splash-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.splash-spinner {
+  animation: splash-spin 0.8s linear infinite;
+}
+
+/* ========== Responsivo: Mi Agenda ========== */
+/* En móvil: un solo scroll para toda la página (formulario + contactos) */
+@media (max-width: 900px) {
+  .app-agenda {
+    height: auto !important;
+    min-height: 100vh;
+    overflow: visible !important;
+  }
+
+  .main-wrapper {
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: 100vh;
+    overflow: visible !important;
+  }
+
+  .sidebar {
+    width: 100% !important;
+    min-height: auto;
+    padding: 24px 20px !important;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .sidebar .form-container {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .add-contact-form {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .content-area {
+    flex: none !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    padding: 24px 20px !important;
+  }
+
+  .top-navigation {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px;
+  }
+
+  .search-box {
+    width: 100% !important;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    padding: 20px 16px !important;
+  }
+
+  .content-area {
+    padding: 24px 16px !important;
+  }
+
+  .add-contact-form {
+    padding: 16px !important;
+  }
+
+  .contacts-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
 }

@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
-import AddContactForm from './AddContactForm'; 
-import Contact from './Contact';
-import contactsData from './contacts.json'; 
+import React, { useState, useEffect } from 'react';
+import AddContactForm from './AddContactForm';
+import ContactList from './ContactList';
+import contactsData from './contacts.json';
+import './App.css';
+
+const SPLASH_DURATION_MS = 1200;
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  // Inicializamos el estado con la data del JSON
   const [contacts, setContacts] = useState(contactsData);
 
-  // 1. FUNCIÓN PARA ELIMINAR
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), SPLASH_DURATION_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
   const deleteContact = (id) => {
+    if (!window.confirm('¿Está seguro de que desea eliminar este contacto?')) return;
     const updated = contacts.filter(c => c.id !== id);
     setContacts(updated);
   };
-
+ 
   // 2. FUNCIÓN PARA FAVORITOS + ORDENAR (Aquí estaba el bug)
   const toggleFavorite = (id) => {
     // Primero mapeamos sobre 'contacts' (el estado), no sobre 'contactsData'
@@ -36,30 +44,41 @@ function App() {
     contact.apellido.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  if (isLoading) {
+    return (
+      <div style={splashStyles.container} className="splash-screen" aria-hidden="false">
+        <div style={splashStyles.content}>
+          <h1 style={splashStyles.title}>Mi Agenda</h1>
+          <p style={splashStyles.subtitle}>Gestión Profesional</p>
+          <div style={splashStyles.spinner} className="splash-spinner" />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div style={styles.appContainer}>
-      <div style={styles.mainWrapper}>
+    <div style={styles.appContainer} className="app-agenda">
+      <div style={styles.mainWrapper} className="main-wrapper">
         
         {/* PANEL IZQUIERDO: CONTROL */}
-        <aside style={styles.sidebar}>
+        <aside style={styles.sidebar} className="sidebar">
           <div style={styles.sidebarHeader}>
             <h1 style={styles.brandTitle}>Mi Agenda</h1>
             <p style={styles.brandStatus}>Gestión Profesional • Parcial 1</p>
           </div>
           
-          <div style={styles.formContainer}>
+          <div style={styles.formContainer} className="form-container">
             <h2 style={styles.sidebarHeading}>Nuevo Contacto</h2>
-            {/* Si AddContactForm necesita agregar gente, pasale setContacts */}
             <AddContactForm setContacts={setContacts} contacts={contacts} />
           </div>
         </aside>
 
         {/* PANEL DERECHO: DATOS */}
-        <main style={styles.contentArea}>
-          <div style={styles.topNavigation}>
+        <main style={styles.contentArea} className="content-area">
+          <div style={styles.topNavigation} className="top-navigation">
             <h2 style={styles.mainHeading}>Contactos Guardados</h2>
             
-            <div style={styles.searchBox}>
+            <div style={styles.searchBox} className="search-box">
               <span style={styles.searchIcon}>🔍</span>
               <input 
                 type="text" 
@@ -71,20 +90,11 @@ function App() {
             </div>
           </div>
 
-          <div style={styles.contactsGrid}>
-            {filteredContacts.length > 0 ? (
-              filteredContacts.map((c) => (
-                <Contact 
-                  key={c.id} 
-                  contact={c} 
-                  onDelete={deleteContact}
-                  onFavorite={toggleFavorite}
-                />
-              ))
-            ) : (
-              <p style={styles.emptyMsg}>No hay contactos que coincidan con la búsqueda.</p>
-            )}
-          </div>
+          <ContactList
+            contacts={filteredContacts}
+            onDelete={deleteContact}
+            onFavorite={toggleFavorite}
+          />
         </main>
 
       </div>
@@ -149,13 +159,42 @@ const styles = {
     fontSize: '0.9rem',
     outline: 'none',
     transition: 'all 0.2s'
+  }
+};
+
+const splashStyles = {
+  container: {
+    position: 'fixed',
+    inset: 0,
+    backgroundColor: '#1e293b',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 9999
   },
-  contactsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-    gap: '25px'
+  content: {
+    textAlign: 'center',
+    color: '#f8fafc'
   },
-  emptyMsg: { color: '#64748b', textAlign: 'center', gridColumn: '1/-1', marginTop: '50px' }
+  title: {
+    margin: 0,
+    fontSize: '2rem',
+    fontWeight: '800',
+    letterSpacing: '-1px'
+  },
+  subtitle: {
+    margin: '8px 0 24px',
+    fontSize: '0.95rem',
+    color: '#94a3b8'
+  },
+  spinner: {
+    width: 40,
+    height: 40,
+    border: '3px solid #334155',
+    borderTopColor: '#28a77b',
+    borderRadius: '50%',
+    margin: '0 auto'
+  }
 };
 
 export default App;
