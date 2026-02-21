@@ -18,7 +18,7 @@ function App() {
         {/* BARRA LATERAL IZQUIERDA: FORMULARIO */}
         <aside style={styles.sidebar}>
           <header style={styles.sidebarHeader}>
-            <h1 style={styles.title}>📱 Mi Agenda</h1>
+            <h1 style={styles.title}> Mi Agenda</h1>
             <p style={styles.subtitle}>Gestión Profesional • Parcial 1</p>
           </header>
           
@@ -33,7 +33,6 @@ function App() {
           <div style={styles.topBar}>
             <h2 style={styles.sectionTitle}>Contactos Guardados</h2>
             <div style={styles.searchWrapper}>
-              <span style={styles.searchIcon}>🔍</span>
               <input 
                 type="text" 
                 placeholder="Buscar contacto..." 
