@@ -4,7 +4,7 @@ const Contact = ({ contact, onDelete, onFavorite }) => {
     // 1. Extraemos el 'id' del objeto contact para que las funciones no se confundan
     const { id, nombre, apellido, telefono, esFavorito } = contact;
 
-    // 2. Estilos dinámicos (Punto 5 y 6 de la rúbrica)
+    // 2. Estilos dinámicos según si es favorito o no (borde, fondo, sombra)
     const cardStyle = {
         border: esFavorito ? '3px solid #FFD700' : '1px solid #ddd',
         backgroundColor: esFavorito ? '#fffdeb' : '#ffffff',
@@ -20,10 +20,8 @@ const Contact = ({ contact, onDelete, onFavorite }) => {
 
     return (
         <div style={cardStyle}>
-            {/* Información del contacto */}
             <div style={{ textAlign: 'left' }}>
                 <h3 style={{ margin: 0, color: '#333' }}>
-                    {/* Solo mostramos el nombre, la estrella va en el botón para no duplicar */}
                     {nombre} {apellido}
                 </h3>
                 <p style={{ margin: '5px 0 0', color: '#666', fontSize: '0.9rem' }}>
@@ -31,11 +29,10 @@ const Contact = ({ contact, onDelete, onFavorite }) => {
                 </p>
             </div>
 
-            {/* Botones de acción */}
+            {/* Botones de acción: favorito (toggle) y eliminar */}
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                
                 {/* BOTÓN FAVORITO: Usa 'id' dinámico para no marcar a otros */}
-                <button 
+                <button
                     onClick={() => onFavorite(id)} 
                     style={{
                         backgroundColor: esFavorito ? '#FFD700' : '#f0f0f0',
@@ -54,9 +51,8 @@ const Contact = ({ contact, onDelete, onFavorite }) => {
                     {/* El texto cambia según el estado (Toggle) */}
                     {esFavorito ? '⭐ Quitar' : '☆ Favorito'}
                 </button>
-
                 {/* BOTÓN ELIMINAR */}
-                <button 
+                <button
                     onClick={() => onDelete(id)}
                     style={{
                         backgroundColor: '#ff4d4d',

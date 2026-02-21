@@ -1,9 +1,12 @@
-/* Permitir app de agenda a ancho completo */
+/* Permitir app de agenda a ancho completo (evita espacio negro en iPad/tablets) */
 #root:has(.app-agenda) {
   max-width: none;
+  width: 100%;
+  min-width: 100%;
   margin: 0;
   padding: 0;
   text-align: left;
+  display: block;
 }
 
 #root {
@@ -61,47 +64,86 @@
 }
 
 /* ========== Responsivo: Mi Agenda ========== */
-/* En móvil: un solo scroll para toda la página (formulario + contactos) */
+
+/* La app siempre cubre al menos toda la pantalla (iOS: -webkit-fill-available) */
+.app-agenda {
+  width: 100%;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  /* Safe area: evita que el contenido quede bajo el notch o el home indicator en iPhone */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.main-wrapper {
+  width: 100%;
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Barra de búsqueda: se ajusta al ancho disponible (no desborda en pantallas estrechas) */
+.search-box {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.search-box input {
+  box-sizing: border-box;
+}
+
+/* En móvil/tablet: un solo scroll y diseño que cubre toda la pantalla */
 @media (max-width: 900px) {
   .app-agenda {
     height: auto !important;
     min-height: 100vh;
-    overflow: visible !important;
+    min-height: -webkit-fill-available;
+    width: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
   }
 
   .main-wrapper {
     flex-direction: column !important;
     height: auto !important;
     min-height: 100vh;
+    width: 100% !important;
     overflow: visible !important;
+    align-items: stretch;
   }
 
+  /* Contenedor del form: ancho completo de la pantalla */
   .sidebar {
     width: 100% !important;
     min-height: auto;
     padding: 24px 20px !important;
     flex-shrink: 0;
-    align-items: center;
+    align-items: stretch;
+    box-sizing: border-box;
   }
 
   .sidebar .form-container {
     width: 100%;
-    max-width: 340px;
-    margin: 0 auto;
   }
 
   .add-contact-form {
     width: 100%;
-    max-width: 340px;
-    margin: 0 auto;
     box-sizing: border-box;
   }
 
+  /* Contenedor del listado: ancho completo de la pantalla */
   .content-area {
-    flex: none !important;
+    flex: 1 !important;
     min-height: auto !important;
     overflow: visible !important;
     padding: 24px 20px !important;
+    width: 100% !important;
+    box-sizing: border-box;
   }
 
   .top-navigation {
@@ -119,10 +161,15 @@
 @media (max-width: 600px) {
   .sidebar {
     padding: 20px 16px !important;
+    padding-left: max(16px, env(safe-area-inset-left)) !important;
+    padding-right: max(16px, env(safe-area-inset-right)) !important;
   }
 
   .content-area {
     padding: 24px 16px !important;
+    padding-left: max(16px, env(safe-area-inset-left)) !important;
+    padding-right: max(16px, env(safe-area-inset-right)) !important;
+    padding-bottom: max(24px, env(safe-area-inset-bottom)) !important;
   }
 
   .add-contact-form {
@@ -132,5 +179,24 @@
   .contacts-grid {
     grid-template-columns: 1fr !important;
     gap: 16px !important;
+  }
+}
+
+/* ========== Ajustes específicos para iPhone / iOS Safari ========== */
+@supports (-webkit-touch-callout: none) {
+  .app-agenda {
+    min-height: -webkit-fill-available;
+  }
+
+  .main-wrapper {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Inputs con font-size >= 16px en móvil para que iOS no haga zoom al enfocar */
+@media (max-width: 900px) {
+  .add-contact-form input,
+  .search-box input {
+    font-size: 16px !important;
   }
 }

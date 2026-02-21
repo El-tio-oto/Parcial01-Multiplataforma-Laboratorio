@@ -6,14 +6,19 @@ const onlyLetters = (value) => value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑü
 const onlyNumbersPlusAndSpaces = (value) => value.replace(/[^0-9+\s]/g, '');
 
 const AddContactForm = ({ setContacts, contacts }) => {
+    // Estado local de cada campo del formulario
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
     const [telefono, setTelefono] = useState('');
 
+    // Validación en tiempo real: solo letras en nombre y apellido
     const handleNombreChange = (e) => setNombre(onlyLetters(e.target.value));
     const handleApellidoChange = (e) => setApellido(onlyLetters(e.target.value));
+    // Validación en tiempo real: solo números, + y espacios en teléfono
     const handleTelefonoChange = (e) => setTelefono(onlyNumbersPlusAndSpaces(e.target.value));
 
+    // Al enviar: crear contacto con id único y agregarlo a la lista
+    // El id es el máximo actual + 1 para evitar duplicados
     const handleSubmit = (e) => {
         e.preventDefault();
         const maxId = contacts.length > 0 ? Math.max(...contacts.map(c => c.id)) : 0;

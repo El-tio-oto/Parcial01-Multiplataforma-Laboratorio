@@ -4,46 +4,53 @@ import ContactList from './ContactList';
 import contactsData from './contacts.json';
 import './App.css';
 
+// Duración en ms de la pantalla de carga inicial
 const SPLASH_DURATION_MS = 1200;
 
 function App() {
+  // Estado de carga para mostrar splash screen
   const [isLoading, setIsLoading] = useState(true);
+  // Término de búsqueda para filtrar contactos
   const [searchTerm, setSearchTerm] = useState("");
+  // Lista de contactos; se inicializa con los datos del JSON
   const [contacts, setContacts] = useState(contactsData);
 
+  // Al montar, ocultar splash después de SPLASH_DURATION_MS
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), SPLASH_DURATION_MS);
     return () => clearTimeout(timer);
   }, []);
 
+  // 1. FUNCIÓN PARA ELIMINAR CONTACTO
+  // Pide confirmación al usuario antes de borrar
   const deleteContact = (id) => {
     if (!window.confirm('¿Está seguro de que desea eliminar este contacto?')) return;
     const updated = contacts.filter(c => c.id !== id);
     setContacts(updated);
   };
- 
+
   // 2. FUNCIÓN PARA FAVORITOS + ORDENAR (Aquí estaba el bug)
+  // Primero mapeamos sobre 'contacts' (el estado), no sobre 'contactsData'
+  // Ordenamos una copia para que los favoritos queden arriba
   const toggleFavorite = (id) => {
-    // Primero mapeamos sobre 'contacts' (el estado), no sobre 'contactsData'
-    const updated = contacts.map(c => 
+    const updated = contacts.map(c =>
       c.id === id ? { ...c, esFavorito: !c.esFavorito } : c
     );
-
-    // Ordenamos una copia para que los favoritos queden arriba
     const sorted = [...updated].sort((a, b) => {
       if (a.esFavorito === b.esFavorito) return 0;
       return a.esFavorito ? -1 : 1;
     });
-    
     setContacts(sorted);
   };
 
   // 3. FILTRADO: Importante filtrar sobre 'contacts' para ver los cambios en tiempo real
+  // Se filtra por nombre o apellido (case insensitive)
   const filteredContacts = contacts.filter(contact =>
     contact.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
     contact.apellido.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Pantalla de carga inicial (splash)
   if (isLoading) {
     return (
       <div style={splashStyles.container} className="splash-screen" aria-hidden="false">
@@ -56,47 +63,42 @@ function App() {
     );
   }
 
+  // Layout principal: sidebar (formulario) + área de contactos
   return (
     <div style={styles.appContainer} className="app-agenda">
       <div style={styles.mainWrapper} className="main-wrapper">
-        
-        {/* PANEL IZQUIERDO: CONTROL */}
+        {/* PANEL IZQUIERDO: formulario para agregar contactos */}
         <aside style={styles.sidebar} className="sidebar">
           <div style={styles.sidebarHeader}>
             <h1 style={styles.brandTitle}>Mi Agenda</h1>
             <p style={styles.brandStatus}>Gestión Profesional • Parcial 1</p>
           </div>
-          
           <div style={styles.formContainer} className="form-container">
             <h2 style={styles.sidebarHeading}>Nuevo Contacto</h2>
             <AddContactForm setContacts={setContacts} contacts={contacts} />
           </div>
         </aside>
-
-        {/* PANEL DERECHO: DATOS */}
+        {/* PANEL DERECHO: listado y barra de búsqueda */}
         <main style={styles.contentArea} className="content-area">
           <div style={styles.topNavigation} className="top-navigation">
             <h2 style={styles.mainHeading}>Contactos Guardados</h2>
-            
             <div style={styles.searchBox} className="search-box">
               <span style={styles.searchIcon}>🔍</span>
-              <input 
-                type="text" 
-                placeholder="Buscar por nombre..." 
+              <input
+                type="text"
+                placeholder="Buscar por nombre..."
                 style={styles.searchInput}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
-
           <ContactList
             contacts={filteredContacts}
             onDelete={deleteContact}
             onFavorite={toggleFavorite}
           />
         </main>
-
       </div>
     </div>
   );
@@ -106,7 +108,8 @@ const styles = {
   appContainer: {
     backgroundColor: '#ffffff',
     height: '100vh',
-    width: '100vw',
+    width: '100%',
+    maxWidth: '100vw',
     display: 'flex',
     overflow: 'hidden',
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
@@ -156,6 +159,7 @@ const styles = {
     borderRadius: '12px',
     border: '1px solid #cbd5e1',
     backgroundColor: '#ffffff',
+    color: '#1e293b',
     fontSize: '0.9rem',
     outline: 'none',
     transition: 'all 0.2s'

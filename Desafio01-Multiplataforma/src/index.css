@@ -22,12 +22,38 @@ a:hover {
   color: #535bf2;
 }
 
+html {
+  /* iOS: evita que 100vh incluya la barra de Safari y da altura correcta */
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+}
+
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  min-height: -webkit-fill-available; /* iOS Safari */
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Solo centrar cuando NO es la app de agenda (template por defecto) */
+body:not(:has(#root .app-agenda)) {
+  display: flex;
+  place-items: center;
+}
+
+/* Con la app de agenda o splash: #root ocupa todo el viewport (arregla iPad Mini/Air) */
+body:has(#root .app-agenda),
+body:has(#root .splash-screen) {
+  display: block;
+  width: 100%;
+}
+
+body:has(#root .app-agenda) #root,
+body:has(#root .splash-screen) #root {
+  width: 100%;
+  min-width: 100%;
 }
 
 h1 {
