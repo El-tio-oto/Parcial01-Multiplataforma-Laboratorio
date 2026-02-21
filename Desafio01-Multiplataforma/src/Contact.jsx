@@ -4,7 +4,7 @@ const Contact = ({ contact, onDelete, onFavorite }) => {
     // 1. Desestructuración
     const { id, nombre, apellido, telefono, esFavorito } = contact;
 
-    // 2. Estilo de la tarjeta
+    // 2. Estilo de la tarjeta (Se mantiene igual, pa)
     const cardStyle = {
         border: esFavorito ? '3px solid #FFD700' : '1px solid #ddd',
         backgroundColor: esFavorito ? '#fffdeb' : '#ffffff',
@@ -35,9 +35,9 @@ const Contact = ({ contact, onDelete, onFavorite }) => {
             {/* Contenedor de Acciones */}
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 
-                {/* BOTÓN DE FAVORITO: Ahora solo cambia el color del borde/icono, no añade otra estrella */}
+                {/* BOTÓN DE FAVORITO: Al darle clic, marca o desmarca según el estado actual */}
                 <button 
-                    onClick={() => onFavorite(id)}
+                    onClick={() => onFavorite(id)} // Esta función en el App.jsx debe invertir el valor de esFavorito
                     style={{
                         background: 'none',
                         border: 'none',
@@ -48,8 +48,9 @@ const Contact = ({ contact, onDelete, onFavorite }) => {
                         display: 'flex',
                         alignItems: 'center'
                     }}
+                    title={esFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}
                 >
-                    {/* Usamos el carácter de estrella solo como icono del botón */}
+                    {/* Si esFavorito es true, muestra la estrella llena ★, si es false, la vacía ☆ */}
                     {esFavorito ? '★' : '☆'}
                 </button>
 
