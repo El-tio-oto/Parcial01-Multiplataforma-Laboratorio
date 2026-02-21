@@ -5,50 +5,111 @@ import contactsData from './contacts.json';
 
 function App() {
   return (
-    <div style={styles.mainLayout}>
-      
-      <header style={styles.header}>
-        <h1 style={styles.title}>📱 Mi Agenda</h1>
-        <p style={styles.subtitle}>Gestión de Contactos - Parcial 1</p>
-      </header>
+    <div style={styles.pageWrapper}>
+      <div style={styles.mainLayout}>
+        
+        {/* ENCABEZADO CON GRADIENTE */}
+        <header style={styles.header}>
+          <h1 style={styles.title}>📱 Mi Agenda</h1>
+          <p style={styles.subtitle}>Gestión de Contactos • Parcial 1</p>
+        </header>
 
-      <AddContactForm />
-      
-      <hr style={styles.divider} />
+        {/* CONTENEDOR DE DOS COLUMNAS */}
+        <div style={styles.contentGrid}>
+          
+          {/* COLUMNA IZQUIERDA: FORMULARIO */}
+          <section style={styles.column}>
+            <h2 style={styles.sectionTitle}>Nuevo Contacto</h2>
+            <div style={styles.glassCard}>
+              <AddContactForm />
+            </div>
+          </section>
 
-      <h2 style={styles.sectionTitle}>Lista de Contactos</h2>
-      <div style={styles.listContainer}>
-        {contactsData.map((c) => (
-          <Contact key={c.id} contact={c} />
-        ))}
+          {/* COLUMNA DERECHA: LISTA */}
+          <section style={styles.column}>
+            <h2 style={styles.sectionTitle}>Contactos Guardados</h2>
+            <div style={styles.listScrollContainer}>
+              {contactsData.map((c) => (
+                <Contact key={c.id} contact={c} />
+              ))}
+            </div>
+          </section>
+
+        </div>
       </div>
-
     </div>
   );
 }
 
 const styles = {
+  pageWrapper: {
+    backgroundColor: '#e2e8f0', // Fondo general 
+    minHeight: '100vh',
+    padding: '40px 20px',
+    display: 'flex',
+    justifyContent: 'center'
+  },
   mainLayout: {
-    maxWidth: '500px',
-    margin: '0 auto',
-    padding: '20px',
-    fontFamily: 'Segoe UI, sans-serif',
-    backgroundColor: '#f4f7f6',
-    minHeight: '100vh'
+    maxWidth: '1000px',
+    width: '100%',
+    backgroundColor: '#ffffff',
+    borderRadius: '24px',
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column'
   },
   header: {
     textAlign: 'center',
-    padding: '15px',
-    backgroundColor: '#2c3e50',
+    padding: '40px 20px',
+    background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)', // Degradado 
     color: 'white',
-    borderRadius: '10px',
-    marginBottom: '25px'
   },
-  title: { margin: 0, fontSize: '1.6rem' },
-  subtitle: { margin: 0, fontSize: '0.9rem', opacity: 0.8 },
-  divider: { margin: '25px 0', border: 'none', borderTop: '1px solid #ddd' },
-  sectionTitle: { color: '#34495e', marginBottom: '15px' },
-  listContainer: { display: 'flex', flexDirection: 'column', gap: '15px' }
+  title: { 
+    margin: 0, 
+    fontSize: '2.2rem', 
+    fontWeight: '800',
+    letterSpacing: '-0.025em'
+  },
+  subtitle: { 
+    margin: '8px 0 0', 
+    fontSize: '1rem', 
+    opacity: 0.8,
+    fontWeight: '400'
+  },
+  contentGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', // Responsivo: 2 col o 1 col si es pequeño
+    gap: '40px',
+    padding: '40px',
+  },
+  column: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px'
+  },
+  sectionTitle: { 
+    color: '#1e293b', 
+    fontSize: '1.25rem', 
+    fontWeight: '700',
+    borderLeft: '4px solid #3b82f6',
+    paddingLeft: '12px',
+    margin: 0
+  },
+  glassCard: {
+    backgroundColor: '#f8fafc',
+    padding: '20px',
+    borderRadius: '16px',
+    border: '1px solid #e2e8f0'
+  },
+  listScrollContainer: { 
+    display: 'flex', 
+    flexDirection: 'column', 
+    gap: '16px',
+    maxHeight: '550px', // Altura fija con scroll para no deformar la página
+    overflowY: 'auto',
+    paddingRight: '10px'
+  }
 };
 
 export default App;
