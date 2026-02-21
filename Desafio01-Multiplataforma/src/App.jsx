@@ -6,49 +6,52 @@ import contactsData from './contacts.json';
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Lógica del buscador
+  // Filtra los contactos por nombre mientras escribes
   const filteredContacts = contactsData.filter(contact =>
-    `${contact.nombre} ${contact.apellido}`.toLowerCase().includes(searchTerm.toLowerCase())
+    contact.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div style={styles.pageWrapper}>
-      <div style={styles.mainLayout}>
+    <div style={styles.appContainer}>
+      <div style={styles.mainWrapper}>
         
-        {/* BARRA LATERAL IZQUIERDA: FORMULARIO */}
+        {/* PANEL IZQUIERDO: CONTROL */}
         <aside style={styles.sidebar}>
-          <header style={styles.sidebarHeader}>
-            <h1 style={styles.title}> Mi Agenda</h1>
-            <p style={styles.subtitle}>Gestión Profesional • Parcial 1</p>
-          </header>
+          <div style={styles.sidebarHeader}>
+            <h1 style={styles.brandTitle}>Mi Agenda</h1>
+            <p style={styles.brandStatus}>Gestión Profesional • Parcial 1</p>
+          </div>
           
           <div style={styles.formContainer}>
-            <h2 style={styles.sectionTitle}>Nuevo Contacto</h2>
+            <h2 style={styles.sidebarHeading}>Nuevo Contacto</h2>
             <AddContactForm />
           </div>
         </aside>
 
-        {/* CONTENIDO PRINCIPAL DERECHA: BUSCADOR Y LISTA */}
-        <main style={styles.mainContent}>
-          <div style={styles.topBar}>
-            <h2 style={styles.sectionTitle}>Contactos Guardados</h2>
-            <div style={styles.searchWrapper}>
+        {/* PANEL DERECHO: DATOS */}
+        <main style={styles.contentArea}>
+          <div style={styles.topNavigation}>
+            <h2 style={styles.mainHeading}>Contactos Guardados</h2>
+            
+            <div style={styles.searchBox}>
+              <span style={styles.searchIcon}>🔍</span>
               <input 
                 type="text" 
-                placeholder="Buscar contacto..." 
+                placeholder="Buscar por nombre..." 
                 style={styles.searchInput}
+                value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
 
-          <div style={styles.listGrid}>
+          <div style={styles.contactsGrid}>
             {filteredContacts.length > 0 ? (
               filteredContacts.map((c) => (
                 <Contact key={c.id} contact={c} />
               ))
             ) : (
-              <p style={styles.noResults}>No se encontraron contactos.</p>
+              <p style={styles.emptyMsg}>No hay contactos que coincidan con la búsqueda.</p>
             )}
           </div>
         </main>
@@ -59,75 +62,69 @@ function App() {
 }
 
 const styles = {
-  pageWrapper: {
-    backgroundColor: '#f0f2f5',
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px',
-    fontFamily: "'Inter', sans-serif"
-  },
-  mainLayout: {
-    maxWidth: '1200px',
-    width: '100%',
-    height: '85vh',
+  appContainer: {
     backgroundColor: '#ffffff',
-    borderRadius: '20px',
-    boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+    height: '100vh',
+    width: '100vw',
     display: 'flex',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+  },
+  mainWrapper: {
+    display: 'flex',
+    width: '100%',
+    height: '100%'
   },
   sidebar: {
     width: '350px',
     backgroundColor: '#1e293b',
-    color: 'white',
-    padding: '40px 30px',
+    color: '#f8fafc',
     display: 'flex',
     flexDirection: 'column',
-    gap: '30px'
+    padding: '40px 30px',
+    boxShadow: '4px 0 15px rgba(0,0,0,0.1)',
+    zIndex: 10
   },
-  sidebarHeader: { borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '20px' },
-  title: { margin: 0, fontSize: '1.8rem', fontWeight: '800' },
-  subtitle: { margin: '5px 0 0', fontSize: '0.85rem', opacity: 0.6 },
-  formContainer: { marginTop: '10px' },
-  sectionTitle: { fontSize: '1.1rem', fontWeight: '700', color: 'inherit', margin: 0 },
+  sidebarHeader: { marginBottom: '40px', borderBottom: '1px solid #334155', paddingBottom: '20px' },
+  brandTitle: { margin: 0, fontSize: '1.8rem', fontWeight: '800', letterSpacing: '-1px' },
+  brandStatus: { margin: '5px 0 0', fontSize: '0.8rem', color: '#94a3b8' },
+  sidebarHeading: { fontSize: '1.2rem', marginBottom: '20px', color: '#f1f5f9' },
   
-  mainContent: {
+  contentArea: {
     flex: 1,
+    backgroundColor: '#f1f5f9',
     padding: '40px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '25px',
-    backgroundColor: '#ffffff'
+    overflowY: 'auto'
   },
-  topBar: {
+  topNavigation: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: '30px',
     paddingBottom: '20px',
-    borderBottom: '1px solid #f1f5f9',
-    color: '#1e293b'
+    borderBottom: '2px solid #e2e8f0'
   },
-  searchWrapper: { position: 'relative', width: '300px' },
-  searchIcon: { position: 'absolute', left: '12px', top: '10px', opacity: 0.4 },
+  mainHeading: { color: '#1e293b', fontSize: '1.6rem', margin: 0, fontWeight: '700' },
+  searchBox: { position: 'relative', width: '350px' },
+  searchIcon: { position: 'absolute', left: '15px', top: '10px', opacity: 0.4 },
   searchInput: {
     width: '100%',
-    padding: '10px 15px 10px 40px',
-    borderRadius: '10px',
-    border: '1px solid #e2e8f0',
-    backgroundColor: '#f8fafc',
+    padding: '10px 15px 10px 45px',
+    borderRadius: '12px',
+    border: '1px solid #cbd5e1',
+    backgroundColor: '#ffffff',
+    fontSize: '0.9rem',
     outline: 'none',
-    fontSize: '0.9rem'
+    transition: 'all 0.2s'
   },
-  listGrid: {
+  contactsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: '20px',
-    overflowY: 'auto',
-    paddingRight: '10px'
+    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+    gap: '25px'
   },
-  noResults: { textAlign: 'center', color: '#64748b', marginTop: '40px' }
+  emptyMsg: { color: '#64748b', textAlign: 'center', gridColumn: '1/-1', marginTop: '50px' }
 };
 
 export default App;
