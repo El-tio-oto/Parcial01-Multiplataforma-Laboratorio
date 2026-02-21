@@ -5,10 +5,35 @@ import contactsData from './contacts.json';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
+  // Inicializamos el estado con la data del JSON
+  const [contacts, setContacts] = useState(contactsData);
 
-  // Filtra los contactos por nombre mientras escribes
-  const filteredContacts = contactsData.filter(contact =>
-    contact.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  // 1. FUNCIÓN PARA ELIMINAR
+  const deleteContact = (id) => {
+    const updated = contacts.filter(c => c.id !== id);
+    setContacts(updated);
+  };
+
+  // 2. FUNCIÓN PARA FAVORITOS + ORDENAR (Aquí estaba el bug)
+  const toggleFavorite = (id) => {
+    // Primero mapeamos sobre 'contacts' (el estado), no sobre 'contactsData'
+    const updated = contacts.map(c => 
+      c.id === id ? { ...c, esFavorito: !c.esFavorito } : c
+    );
+
+    // Ordenamos una copia para que los favoritos queden arriba
+    const sorted = [...updated].sort((a, b) => {
+      if (a.esFavorito === b.esFavorito) return 0;
+      return a.esFavorito ? -1 : 1;
+    });
+    
+    setContacts(sorted);
+  };
+
+  // 3. FILTRADO: Importante filtrar sobre 'contacts' para ver los cambios en tiempo real
+  const filteredContacts = contacts.filter(contact =>
+    contact.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    contact.apellido.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -24,7 +49,8 @@ function App() {
           
           <div style={styles.formContainer}>
             <h2 style={styles.sidebarHeading}>Nuevo Contacto</h2>
-            <AddContactForm />
+            {/* Si AddContactForm necesita agregar gente, pasale setContacts */}
+            <AddContactForm setContacts={setContacts} contacts={contacts} />
           </div>
         </aside>
 
@@ -48,7 +74,12 @@ function App() {
           <div style={styles.contactsGrid}>
             {filteredContacts.length > 0 ? (
               filteredContacts.map((c) => (
-                <Contact key={c.id} contact={c} />
+                <Contact 
+                  key={c.id} 
+                  contact={c} 
+                  onDelete={deleteContact}
+                  onFavorite={toggleFavorite}
+                />
               ))
             ) : (
               <p style={styles.emptyMsg}>No hay contactos que coincidan con la búsqueda.</p>
