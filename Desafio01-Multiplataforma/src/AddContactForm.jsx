@@ -16,7 +16,7 @@ const AddContactForm = () => {
 
     return (
         <section style={styles.container}>
-            <h2 style={styles.title}>➕ Agregar Nuevo Contacto</h2>
+            <h2 style={styles.title}> Agregar Nuevo Contacto</h2>
             <form onSubmit={handleSubmit} style={styles.form}>
                 <input 
                     type="text" 
@@ -62,7 +62,7 @@ const styles = {
     form: { display: 'flex', flexDirection: 'column', gap: '12px' },
     input: { padding: '12px', borderRadius: '8px', border: '1px solid #ccc', fontSize: '1rem' },
     button: {
-        backgroundColor: '#28a745',
+        backgroundColor: '#28a77b',
         color: 'white',
         padding: '12px',
         border: 'none',
