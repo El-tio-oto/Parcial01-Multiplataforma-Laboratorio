@@ -1,10 +1,10 @@
 import React from 'react';
 
 const Contact = ({ contact, onDelete, onFavorite }) => {
-    // 1. Desestructuración
+    // 1. Extraemos el 'id' del objeto contact para que las funciones no se confundan
     const { id, nombre, apellido, telefono, esFavorito } = contact;
 
-    // 2. Estilo de la tarjeta (Se mantiene igual, pa)
+    // 2. Estilos dinámicos (Punto 5 y 6 de la rúbrica)
     const cardStyle = {
         border: esFavorito ? '3px solid #FFD700' : '1px solid #ddd',
         backgroundColor: esFavorito ? '#fffdeb' : '#ffffff',
@@ -20,11 +20,10 @@ const Contact = ({ contact, onDelete, onFavorite }) => {
 
     return (
         <div style={cardStyle}>
-            {/* Contenedor de Info */}
+            {/* Información del contacto */}
             <div style={{ textAlign: 'left' }}>
-                <h3 style={{ margin: 0, color: '#333', display: 'flex', alignItems: 'center' }}>
-                    {/* ESTA ES LA ÚNICA ESTRELLA DECORATIVA */}
-                    {esFavorito && <span style={{ marginRight: '8px' }}>⭐</span>}
+                <h3 style={{ margin: 0, color: '#333' }}>
+                    {/* Solo mostramos el nombre, la estrella va en el botón para no duplicar */}
                     {nombre} {apellido}
                 </h3>
                 <p style={{ margin: '5px 0 0', color: '#666', fontSize: '0.9rem' }}>
@@ -32,29 +31,31 @@ const Contact = ({ contact, onDelete, onFavorite }) => {
                 </p>
             </div>
 
-            {/* Contenedor de Acciones */}
+            {/* Botones de acción */}
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 
-                {/* BOTÓN DE FAVORITO: Al darle clic, marca o desmarca según el estado actual */}
+                {/* BOTÓN FAVORITO: Usa 'id' dinámico para no marcar a otros */}
                 <button 
-                    onClick={() => onFavorite(id)} // Esta función en el App.jsx debe invertir el valor de esFavorito
+                    onClick={() => onFavorite(id)} 
                     style={{
-                        background: 'none',
-                        border: 'none',
-                        fontSize: '1.4rem',
+                        backgroundColor: esFavorito ? '#FFD700' : '#f0f0f0',
+                        color: esFavorito ? 'white' : '#888',
+                        border: '1px solid #ccc',
+                        padding: '8px 12px',
+                        borderRadius: '6px',
                         cursor: 'pointer',
-                        color: esFavorito ? '#FFD700' : '#ccc',
-                        padding: '5px',
+                        fontWeight: 'bold',
+                        fontSize: '0.8rem',
                         display: 'flex',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        gap: '5px'
                     }}
-                    title={esFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}
                 >
-                    {/* Si esFavorito es true, muestra la estrella llena ★, si es false, la vacía ☆ */}
-                    {esFavorito ? '★' : '☆'}
+                    {/* El texto cambia según el estado (Toggle) */}
+                    {esFavorito ? '⭐ Quitar' : '☆ Favorito'}
                 </button>
 
-                {/* Botón Eliminar */}
+                {/* BOTÓN ELIMINAR */}
                 <button 
                     onClick={() => onDelete(id)}
                     style={{
